@@ -8,5 +8,6 @@ public class ZenjectInstaller : MonoInstaller
         //Container.Bind<TestZenject>().AsSingle().NonLazy();//создали шаблон экземпляра, AsSingle() - он один, NonLazy() - запуск сразу по старту
 
         Container.Bind<IData>().To<TestZenject>().AsSingle().NonLazy();
+
     }
 }

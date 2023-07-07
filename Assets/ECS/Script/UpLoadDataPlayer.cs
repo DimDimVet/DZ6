@@ -16,9 +16,6 @@ public class UpLoadDataPlayer : MonoBehaviour
 
     //
 
-
-
-
     private void Awake()
     {
         StartCoroutine(Example());
@@ -91,41 +88,11 @@ public class UpLoadDataPlayer : MonoBehaviour
      
     }
 
-    //GoogleOld
-    //private string GetGoogleFile()
-    //{
-    //    List<UnityGoogleDrive.Data.File> files = GoogleTools.GetListFile();
-    //    string jsonString="";
-
-    //    for (int i = 0; i < files.Count; i++)
-    //    {
-    //        if (files[i].Name == GoogleTools.NameFile)
-    //        {
-    //            strId = files[i].Id;
-    //        }
-    //    }
-    //    if (strId != null)
-    //    {
-    //        jsonString = GoogleTools.LoadFile(strId);
-    //        return jsonString;
-    //    }
-    //    else
-    //    {
-    //        return jsonString;
-    //    }
-    //}
-
     void OnApplicationQuit()
     {
         SaveData();
         //
     }
-
-    //GoogleOld
-    //private void SetGoogleFail(string jsonString)
-    //{
-    //    GoogleTools.SaveFile(jsonString);
-    //}
 
     private void SaveData()
     {

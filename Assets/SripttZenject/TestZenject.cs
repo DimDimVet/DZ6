@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class TestZenject: IData
+public class TestZenject : IData
 {
     //private string txt;
     //public TestZenject(string text)
