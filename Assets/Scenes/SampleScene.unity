@@ -1198,7 +1198,7 @@ GameObject:
   - component: {fileID: 690827264}
   - component: {fileID: 690827265}
   m_Layer: 0
-  m_Name: StartID
+  m_Name: ZenjectInstaller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1228,7 +1228,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 690827263}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94aec715c4400a44682a7438ae7eb243, type: 3}
+  m_Script: {fileID: 11500000, guid: 13db3d8f29ac0cf4b81ce02b2745ddde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &703056035
@@ -1738,7 +1738,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1140015130}
   - component: {fileID: 1140015129}
-  - component: {fileID: 1140015131}
   m_Layer: 0
   m_Name: SceneContext
   m_TagString: Untagged
@@ -1760,7 +1759,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
   _monoInstallers:
-  - {fileID: 1140015131}
   - {fileID: 690827265}
   _installerPrefabs: []
   _autoRun: 1
@@ -1795,18 +1793,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 29
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1140015131
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1140015128}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13db3d8f29ac0cf4b81ce02b2745ddde, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1170657665
 GameObject:
   m_ObjectHideFlags: 0
