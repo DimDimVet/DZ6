@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class UpLoadDataPlayer : MonoBehaviour
 {
@@ -11,10 +12,16 @@ public class UpLoadDataPlayer : MonoBehaviour
     [SerializeField] private Text loadFireBaseData;
     //
     [SerializeField] private HealtComponent healtComponent;
-    private DataPlayer dataPlayer;
     private string hashKey = "DataPlayer";
 
-    //
+    //Zenject
+    private IData dataConfig;
+
+    [Inject]
+    public void Init(IData d)
+    {
+        dataConfig = d;
+    }
 
     private void Awake()
     {
@@ -24,7 +31,7 @@ public class UpLoadDataPlayer : MonoBehaviour
     private IEnumerator Example()
     {
         int i = 0;
-        while (i<3)
+        while (i < 3)
         {
             FireBaseTool.LoadData(hashKey);
             yield return new WaitForSeconds(0.2f);
@@ -34,58 +41,36 @@ public class UpLoadDataPlayer : MonoBehaviour
     }
     private void LoadData()
     {
-        Time.timeScale = 1f;
-        int swithTypeLoad = 0;
-        DataPlayer dataPlayerFireBase=new DataPlayer();
-        DataPlayer dataPlayerLocal = new DataPlayer();
+        DataPlayer dataPlayerFireBase;
+        DataPlayer dataPlayerLocal;
+        DataPlayer dataPlayerDefault;
 
-        if (FireBaseTool.Snapshot!=null)
-        {
-            dataPlayerFireBase = new DataPlayer
-            {
-                healtPlayer = Int32.Parse(FireBaseTool.Snapshot.Child("healtPlayer").GetValue(true).ToString()),
-                shootCount = Int32.Parse(FireBaseTool.Snapshot.Child("shootCount").GetValue(true).ToString())
-            };
-            swithTypeLoad = 1;
-            loadFireBaseData.text = $"healtPlayer={dataPlayerFireBase.healtPlayer} shootCount={dataPlayerFireBase.shootCount}";
-        }
+        bool isFireBase=dataConfig.LoadDataFireBase(FireBaseTool.Snapshot, out dataPlayerFireBase);//загрузим FireBase
+        loadFireBaseData.text = $"healtPlayer={dataPlayerFireBase.healtPlayer} shootCount={dataPlayerFireBase.shootCount}";
 
-        if (PlayerPrefs.HasKey($"{hashKey}"))
+        bool isLocalBase = dataConfig.LoadDataLocalBase(hashKey, out dataPlayerLocal);//загрузим LocalBase
+        loadLocalData.text = $"healtPlayer={dataPlayerLocal.healtPlayer} shootCount={dataPlayerLocal.shootCount}";
+
+        dataConfig.LoadDataDefault(out dataPlayerDefault);
+
+        if (isFireBase)//выберем источник загрузки
         {
-            string jsonString = PlayerPrefs.GetString($"{hashKey}");
-            if (!jsonString.Equals(string.Empty, StringComparison.Ordinal))
-            {
-                dataPlayerLocal = JsonUtility.FromJson<DataPlayer>(jsonString);
-                swithTypeLoad = 2;
-            }
-            loadLocalData.text = $"healtPlayer={dataPlayerLocal.healtPlayer} shootCount={dataPlayerLocal.shootCount}";
+            GetData(dataPlayerFireBase);
         }
-        else
+        else if (isLocalBase)//выберем источник загрузки
         {
-            dataPlayer = new DataPlayer();
-            swithTypeLoad = 0;
+            GetData(dataPlayerLocal);
+        }
+        else//выберем источник загрузки
+        {
+            GetData(dataPlayerDefault);
         }
 
-        //заполняем данными
-        
-        switch (swithTypeLoad)
-        {
-            case 0:
-                healtComponent.Healt = dataPlayer.healtPlayer;
-                Statistic.ShootCount = dataPlayer.shootCount;//обращаемся к статичному классу
-                break;
-            case 1:
-                healtComponent.Healt = dataPlayerFireBase.healtPlayer;
-                Statistic.ShootCount = dataPlayerFireBase.shootCount;//обращаемся к статичному классу
-                break;
-            case 2:
-                healtComponent.Healt = dataPlayerLocal.healtPlayer;
-                Statistic.ShootCount = dataPlayerLocal.shootCount;//обращаемся к статичному классу
-                break;
-            default:
-                break;
-        }
-     
+    }
+    private void GetData(DataPlayer dataPlayer)//установим текущею конфигурацию
+    {
+        healtComponent.Healt = dataPlayer.healtPlayer;
+        Statistic.ShootCount = dataPlayer.shootCount;//обращаемся к статичному классу
     }
 
     void OnApplicationQuit()
@@ -96,20 +81,14 @@ public class UpLoadDataPlayer : MonoBehaviour
 
     private void SaveData()
     {
-        dataPlayer = new DataPlayer
+        DataPlayer dataPlayer = new DataPlayer
         {
             healtPlayer = healtComponent.Healt,
             shootCount = Statistic.ShootCount
         };
-        string jsonString = JsonUtility.ToJson(dataPlayer);
-        Debug.Log(jsonString);
-        //local
-        PlayerPrefs.SetString(hashKey, jsonString);
-        //FireBase
-        FireBaseTool.SaveData(hashKey, jsonString);
-        //GoogleOld
-        //SetGoogleFail(jsonString);
-        saveData.text = $"healtPlayer={dataPlayer.healtPlayer} shootCount={dataPlayer.shootCount}";
+
+        string rezult = dataConfig.SaveData(dataPlayer, hashKey);
+        saveData.text = rezult;
     }
 }
 
